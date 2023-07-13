@@ -20,29 +20,23 @@ public class CustomWebSecurityConfigurationAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-		.withUser("user1")
-		.password((passwordEncoder().encode("123123")))
+		auth.inMemoryAuthentication().withUser("user1").password((passwordEncoder().encode("123123")))
 				.authorities("ROLE_USER");
 	}
+
 //	Para leer usuarios, debería usar los de 
-	
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests((requests) -> requests.
-				requestMatchers("/")
-				.permitAll()
-				.anyRequest().authenticated());
-		http.formLogin((formlogin) ->  formlogin
+		http.authorizeHttpRequests(
+				(requests) -> requests.requestMatchers("/").permitAll().anyRequest().authenticated());
+		http.formLogin((formlogin) -> formlogin
 //				.loginPage("/login")
-				.permitAll() );
+				.permitAll());
 		return http.build();
 //		.and().httpBasic()
 //		hasRole("ROLE_USER"); 
 
 	}
-
-	
 
 }

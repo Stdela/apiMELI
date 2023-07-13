@@ -2,30 +2,44 @@ package com.example.sdelamer.appParaMeli.Model;
 
 import java.util.Date;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.lang.NonNull;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+@SQLDelete(sql = "UPDATE app_user SET is_deleted=true WHERE id=?")
+@Where(clause = "is_deleted=false")
+@Entity
 public class AppUser {
 
 // Por ahora va a estar básica, van a ser usuarios cargados por bd
 	@Id
 	private Long id;
+	@Column(name = "creation_date")
 	private Date creationDate;
+	@Column(name = "deleted_at")
 	private Date deletedAt;
-	private boolean isDeleted;
+	@Column(name = "is_deleted")
+	private boolean isDeleted = false;
 //	TODO :  podemos crear una propia anotación para customValidator
 	@NonNull
+	@Column(name= "email")
 	private String email;
 	@NonNull
 	private String name;
+	@Column(name = "last_name")
 	private String lastName;
+	@Column(name = "last_update")
 	private Date lastUpdate;
+	@NonNull
 	private String password;
 //	private Long role;
-	
+
 	public AppUser() {
-		
+
 	}
 
 	public AppUser(Long id, Date creationDate, Date deletedAt, boolean isDeleted, String email, String name,
@@ -113,8 +127,5 @@ public class AppUser {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
-
 
 }
