@@ -10,26 +10,29 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.example.sdelamer.appParaMeli.Service.SecurityService.MyUserDetailsService;
+
 @Configuration
 @EnableWebSecurity
 public class CustomWebSecurityConfigurationAdapter {
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+
+	@Autowired
+	MyUserDetailsService userDetailsService;
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication().withUser("user1").password((passwordEncoder().encode("123123")))
 				.authorities("ROLE_USER");
+		auth.userDetailsService(userDetailsService);
 	}
 
-//	Para leer usuarios, debería usar los de 
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(
-				(requests) -> requests.requestMatchers("/").permitAll().anyRequest().authenticated());
+				(requests) -> requests.requestMatchers("/")
+				.permitAll()
+				.anyRequest().authenticated());
 		http.formLogin((formlogin) -> formlogin
 //				.loginPage("/login")
 				.permitAll());
@@ -37,6 +40,11 @@ public class CustomWebSecurityConfigurationAdapter {
 //		.and().httpBasic()
 //		hasRole("ROLE_USER"); 
 
+	}
+
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 }
